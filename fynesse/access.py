@@ -37,6 +37,24 @@ def credential_info_fyn():
                               'password': password}
           yaml.dump(credentials_dict, file)
 
+
+
+def create_connection(user, password, host, database, port=3306):
+    conn = None
+    try:
+        conn = pymysql.connect(user=user,
+                               passwd=password,
+                               host=host,
+                               port=port,
+                               local_infile=1,
+                               db=database
+                               )
+    except Exception as e:
+        print(f"Error connecting to the MariaDB Server: {e}")
+    return conn
+
+
+
 def data():
     """Read the data from the web or local file, returning structured format such as a data frame"""
     raise NotImplementedError
