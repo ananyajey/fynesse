@@ -54,7 +54,7 @@ def get_pois(conn, size, tags):
 
   pois = ox.geometries_from_bbox(north, south, east, west, tags)
 
-  return pois
+  return pois, [north, south, east, west]
 
 
 
