@@ -67,6 +67,52 @@ def load_into(conn, file_path, table_name):
 
   conn.commit()
   print(cur.lastrowid)
+  
+  
+  
+def select_pcd(conn, from_date, to_date, min_lat = None, max_lat = None, min_long = None, max_long = None, town_city = None, district = None, county = None, country = None, property_type = None):
+    conditions = ""
+    if (min_lat != None):
+      conditions = conditions + "\n AND lattitude >= '{}'".format(min_lat)
+    
+    if (max_lat != None):
+      conditions = conditions + "\n AND lattitude <= '{}'".format(max_lat)
+    
+    if (min_long != None):
+      conditions = conditions + "\n AND longitude >= '{}'".format(min_long)
+    
+    if (max_long != None):
+      conditions = conditions + "\n AND longitude <= '{}'".format(max_long)
+    
+    if (town_city != None):
+      conditions = conditions + "\n AND town_city = '{}'".format(town_city)
+    
+    if (district != None):
+      conditions = conditions + "\n AND district = '{}'".format(district)
+    
+    if (county != None):
+      conditions = conditions + "\n AND county = '{}'".format(county)
+    
+    if (country != None):
+      conditions = conditions + "\n AND country = '{}'".format(country)
+    
+    if (property_type != None):
+      conditions = conditions + "\n AND property_type = '{}'".format(property_type)
+
+
+    cur = conn.cursor()
+
+    cur.execute("""
+                 INSERT INTO prices_coordinates_data(price, date_of_transfer, postcode, property_type, new_build_flag, tenure_type, locality, town_city, district, county, country, lattitude, longitude)
+                    (SELECT pp_data.price, pp_data.date_of_transfer, pp_data.postcode, pp_data.property_type, pp_data.new_build_flag, pp_data.tenure_type, pp_data.locality, pp_data.town_city, pp_data.district, pp_data.county, postcode_data.country, postcode_data.lattitude, postcode_data.longitude
+                    FROM `pp_data`
+                    INNER JOIN `postcode_data` ON pp_data.postcode = postcode_data.postcode
+                    WHERE date_of_transfer >= DATE '{}'
+                    AND date_of_transfer <= DATE '{}'{});
+                """.format(from_date, to_date, conditions))
+
+    conn.commit()
+    print(cur.lastrowid)
 
 
 def data():
