@@ -55,6 +55,20 @@ def create_connection(user, password, host, database, port=3306):
 
 
 
+def load_into(conn, file_path, table_name):
+  cur = conn.cursor()
+
+  cur.execute("""
+              LOAD DATA LOCAL INFILE '{}' INTO TABLE `{}`
+              FIELDS TERMINATED BY ',' 
+              OPTIONALLY ENCLOSED BY '"'
+              LINES STARTING BY '' TERMINATED BY '\n';
+              """.format(file_path, table_name))
+
+  conn.commit()
+  print(cur.lastrowid)
+
+
 def data():
     """Read the data from the web or local file, returning structured format such as a data frame"""
     raise NotImplementedError
