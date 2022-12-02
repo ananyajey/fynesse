@@ -33,6 +33,33 @@ def db_to_df(conn, table_name, column_names = None):
 
 
 
+def get_pois(conn, size, tags):
+  """
+  Returns a 1x4 array containing the minimum lattitude, maximum lattitude, minimum longitude, and maximum longitude present in the prices_coordinates_data table
+  """
+
+  cur = conn.cursor()
+
+  cur.execute("""
+              SELECT MIN(lattitude), MAX(lattitude), MIN(longitude), MAX(longitude) FROM prices_coordinates_data
+              """)
+
+  rows = cur.fetchall()
+  result = (np.array(rows[0])).astype(float)
+
+  north = result[1] + size/2
+  south = result[0] - size/2
+  east = result[3] + size/2
+  west = result[2] - size/2
+
+  pois = ox.geometries_from_bbox(north, south, east, west, tags)
+
+  return pois
+
+
+
+
+
 def data():
     """Load the data from access and ensure missing values are correctly encoded as well as indices correct, column names informative, date and times correctly formatted. Return a structured data structure such as a data frame."""
     #df = access.data()
