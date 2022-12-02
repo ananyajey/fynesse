@@ -1,7 +1,7 @@
 
 from .config import *
 
-import .access
+#import .access
 
 def db_to_df(conn, table_name, column_names = None):
   sql_query = pd.read_sql_query ('''SELECT * FROM {}'''.format(table_name), conn)
@@ -17,7 +17,7 @@ def db_to_df(conn, table_name, column_names = None):
 
 def data():
     """Load the data from access and ensure missing values are correctly encoded as well as indices correct, column names informative, date and times correctly formatted. Return a structured data structure such as a data frame."""
-    df = access.data()
+    #df = access.data()
     raise NotImplementedError
 
 def query(data):
